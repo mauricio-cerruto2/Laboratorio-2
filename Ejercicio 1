@@ -1,0 +1,146 @@
+package poo1;
+
+public class AlgebraVectorial {
+	private double x;
+    private double y;
+    private double z;
+
+    public AlgebraVectorial() {
+        this(0, 0, 0);
+    }
+
+    public AlgebraVectorial(double x, double y) {
+        this(x, y, 0);
+    }
+
+    public AlgebraVectorial(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+    public double productoPunto(AlgebraVectorial otro) {
+        return this.x * otro.x + this.y * otro.y + this.z * otro.z;
+    }
+
+    public AlgebraVectorial productoCruz(AlgebraVectorial otro) {
+        double nuevoX = this.y * otro.z - this.z * otro.y;
+        double nuevoY = this.z * otro.x - this.x * otro.z;
+        double nuevoZ = this.x * otro.y - this.y * otro.x;
+        return new AlgebraVectorial(nuevoX, nuevoY, nuevoZ);
+    }
+
+    public double magnitud() {
+        return Math.sqrt(x * x + y * y + z * z);
+    }
+    public boolean perpendicular(AlgebraVectorial otro) {
+
+        return Math.abs(this.productoPunto(otro)) < 1e-10;
+    }
+
+    public boolean perpendicular(AlgebraVectorial otro, int metodo) {
+        switch (metodo) {
+            case 1:
+              
+                AlgebraVectorial suma = new AlgebraVectorial(
+                    this.x + otro.x, this.y + otro.y, this.z + otro.z);
+                AlgebraVectorial resta = new AlgebraVectorial(
+                    this.x - otro.x, this.y - otro.y, this.z - otro.z);
+                return Math.abs(suma.magnitud() - resta.magnitud()) < 1e-10;
+            case 2:
+                
+                AlgebraVectorial resta1 = new AlgebraVectorial(
+                    this.x - otro.x, this.y - otro.y, this.z - otro.z);
+                AlgebraVectorial resta2 = new AlgebraVectorial(
+                    otro.x - this.x, otro.y - this.y, otro.z - this.z);
+                return Math.abs(resta1.magnitud() - resta2.magnitud()) < 1e-10;
+            case 3:
+                
+                AlgebraVectorial suma2 = new AlgebraVectorial(
+                    this.x + otro.x, this.y + otro.y, this.z + otro.z);
+                double sumaMagnitudes = this.magnitud() * this.magnitud() + 
+                                      otro.magnitud() * otro.magnitud();
+                return Math.abs(suma2.magnitud() * suma2.magnitud() - sumaMagnitudes) < 1e-10;
+            default:
+                return perpendicular(otro); 
+        }
+    }
+
+    
+    public boolean paralelo(AlgebraVectorial otro) {
+        
+        return this.productoCruz(otro).magnitud() < 1e-10;
+    }
+
+    public boolean paralelo(AlgebraVectorial otro, double umbral) {
+      
+        if (otro.magnitud() < 1e-10) return false; 
+        
+        double r = this.x / otro.x;
+        if (Double.isInfinite(r) || Double.isNaN(r)) return false;
+        
+      
+        boolean paraleloY = Math.abs(this.y - r * otro.y) < umbral;
+        boolean paraleloZ = Math.abs(this.z - r * otro.z) < umbral;
+        
+        return paraleloY && paraleloZ;
+    }
+
+   
+    public AlgebraVectorial proyeccion(AlgebraVectorial otro) {
+        double denominador = otro.magnitud() * otro.magnitud();
+        if (denominador < 1e-10) {
+            return new AlgebraVectorial(); 
+        }
+        double factor = this.productoPunto(otro) / denominador;
+        return new AlgebraVectorial(
+            factor * otro.x,
+            factor * otro.y,
+            factor * otro.z
+        );
+    }
+
+    
+    public double componente(AlgebraVectorial otro) {
+        double magnitud = otro.magnitud();
+        if (magnitud < 1e-10) {
+            return 0; 
+        }
+        return this.productoPunto(otro) / magnitud;
+    }
+
+    
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public double getZ() { return z; }
+
+    @Override
+    public String toString() {
+        return String.format("(%.2f, %.2f, %.2f)", x, y, z);
+    }
+
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		 AlgebraVectorial v1 = new AlgebraVectorial(1, 0, 0);
+	        AlgebraVectorial v2 = new AlgebraVectorial(0, 1, 0);
+	        AlgebraVectorial v3 = new AlgebraVectorial(2, 0, 0);
+	        AlgebraVectorial v4 = new AlgebraVectorial(1, 1, 0);
+
+	        
+	        System.out.println("¿v1 y v2 son perpendiculares? (producto punto): " + v1.perpendicular(v2));
+	        System.out.println("¿v1 y v2 son perpendiculares? (método 1): " + v1.perpendicular(v2, 1));
+	        System.out.println("¿v1 y v2 son perpendiculares? (método 3): " + v1.perpendicular(v2, 3));
+
+	      
+	        System.out.println("\n¿v1 y v3 son paralelos? (producto cruz): " + v1.paralelo(v3));
+	        System.out.println("¿v1 y v3 son paralelos? (método escalar): " + v1.paralelo(v3, 1e-10));
+
+	    
+	        System.out.println("\nProyección de v4 sobre v1: " + v4.proyeccion(v1));
+	        System.out.println("Componente de v4 en v1: " + v4.componente(v1));
+	    
+	
+
+	}
+
+}
