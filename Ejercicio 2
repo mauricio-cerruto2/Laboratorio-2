@@ -1,0 +1,105 @@
+package poo1;
+
+public class Vector3D {
+	private double x;
+    private double y;
+    private double z;
+
+    
+    public Vector3D() {
+        this(0, 0, 0);
+    }
+
+    public Vector3D(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+  
+    public Vector3D sumar(Vector3D otro) {
+        return new Vector3D(
+            this.x + otro.x,
+            this.y + otro.y,
+            this.z + otro.z
+        );
+    }
+
+    public Vector3D multiplicar(double escalar) {
+        return new Vector3D(
+            escalar * this.x,
+            escalar * this.y,
+            escalar * this.z
+        );
+    }
+
+    public double longitud() {
+        return Math.sqrt(x * x + y * y + z * z);
+    }
+
+    public Vector3D normalizar() {
+        double magnitud = this.longitud();
+        if (magnitud < 1e-10) {
+            return new Vector3D(); 
+        }
+        return new Vector3D(
+            x / magnitud,
+            y / magnitud,
+            z / magnitud);
+    }
+
+
+    public double productoPunto(Vector3D otro) {
+        return this.x * otro.x + this.y * otro.y + this.z * otro.z;
+    }
+
+   
+    public Vector3D productoCruz(Vector3D otro) {
+        return new Vector3D(
+            this.y * otro.z - this.z * otro.y,
+            this.z * otro.x - this.x * otro.z,
+            this.x * otro.y - this.y * otro.x);
+    }
+
+   
+    public boolean esPerpendicular(Vector3D otro) {
+      
+        return Math.abs(this.productoPunto(otro)) < 1e-10;
+    }
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public double getZ() { return z; }
+
+    @Override
+    public String toString() {
+        return String.format("(%.2f, %.2f, %.2f)", x, y, z);
+    }
+	
+		 public static void main(String[] args) {
+		        
+		        Vector3D v1 = new Vector3D(1, 0, 0);
+		        Vector3D v2 = new Vector3D(0, 1, 0);
+		        Vector3D v3 = new Vector3D(2, 0, 0);
+		        Vector3D v4 = new Vector3D(1, 1, 0);
+
+		    
+		        System.out.println("v1 + v2 = " + v1.sumar(v2));
+		        System.out.println("v1 * 3 = " + v1.multiplicar(3));
+		        
+		      
+		        System.out.println("\nProducto punto v1·v2: " + v1.productoPunto(v2));
+		        System.out.println("Producto cruz v1×v2: " + v1.productoCruz(v2));
+		        
+		       
+		        System.out.println("\nLongitud de v4: " + v4.longitud());
+		        System.out.println("Vector normalizado de v4: " + v4.normalizar());
+		        
+		     
+		        System.out.println("\n¿v1 y v2 son perpendiculares? " + v1.esPerpendicular(v2));
+		        System.out.println("¿v1 y v3 son perpendiculares? " + v1.esPerpendicular(v3));
+		    
+		
+
+	}
+
+}
